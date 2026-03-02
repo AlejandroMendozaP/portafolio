@@ -596,7 +596,9 @@ ul {
 /* Projects Section */
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: 1fr;
+  max-width: 900px;
+  margin: 0 auto;
   gap: 2.5rem;
 }
 
@@ -703,22 +705,23 @@ ul {
 }
 
 .project-content {
-  padding: 1.8rem;
+  padding: 2.5rem;
   display: flex;
   flex-direction: column;
   flex: 1;
 }
 
 .project-title {
-  font-size: 1.4rem;
+  font-size: 1.8rem;
+  font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 0.8rem;
+  margin-bottom: 1rem;
 }
 
 .project-description {
   color: var(--text-secondary);
-  font-size: 0.95rem;
-  line-height: 1.6;
+  font-size: 1.05rem;
+  line-height: 1.7;
   margin-bottom: 1.5rem;
   flex: 1;
 }

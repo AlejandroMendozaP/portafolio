@@ -23,11 +23,18 @@ const projectsData = [
     description: 'Plataforma centralizada diseñada para la gestión unificada de procesos académicos, administrativos y de control escolar en una institución educativa. Permite la administración de expedientes, el seguimiento de trayectorias estudiantiles y la automatización de trámites institucionales mediante una arquitectura escalable y segura.',
     technologies: ['React', 'Laravel', 'PostgreSQL', 'Tailwind CSS'],
     images: [
-      '/projects/1.png',
-      '/projects/2.png',
-      '/projects/3.png',
-      '/projects/4.png',
-      '/projects/5.png'
+      '/projects/sii/1.png',
+      '/projects/sii/2.png',
+      '/projects/sii/3.png',
+      '/projects/sii/4.png',
+      '/projects/sii/5.png',
+      '/projects/sii/6.png',
+      '/projects/sii/7.png',
+      '/projects/sii/8.png',
+      '/projects/sii/11.png',
+      '/projects/sii/12.png',
+      '/projects/sii/9.png',
+      '/projects/sii/10.png',
     ],
   },
 ];
@@ -158,7 +165,7 @@ export default function Home() {
 
               <h1 className="hero-title">
                 Alejandro Mendoza <br />
-                <span className="text-gradient">Desarrollador Web Full Stack</span>
+                <span className="text-gradient">Desarrollador Web</span>
               </h1>
 
               <p className="hero-subtitle">
