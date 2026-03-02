@@ -23,18 +23,18 @@ const projectsData = [
     description: 'Plataforma centralizada diseñada para la gestión unificada de procesos académicos, administrativos y de control escolar en una institución educativa. Permite la administración de expedientes, el seguimiento de trayectorias estudiantiles y la automatización de trámites institucionales mediante una arquitectura escalable y segura.',
     technologies: ['React', 'Laravel', 'PostgreSQL', 'Tailwind CSS'],
     images: [
-      '/projects/sii/1.png',
-      '/projects/sii/2.png',
-      '/projects/sii/3.png',
-      '/projects/sii/4.png',
-      '/projects/sii/5.png',
-      '/projects/sii/6.png',
-      '/projects/sii/7.png',
-      '/projects/sii/8.png',
-      '/projects/sii/11.png',
-      '/projects/sii/12.png',
-      '/projects/sii/9.png',
-      '/projects/sii/10.png',
+      '/portafolio/projects/sii/1.png',
+      '/portafolio/projects/sii/2.png',
+      '/portafolio/projects/sii/3.png',
+      '/portafolio/projects/sii/4.png',
+      '/portafolio/projects/sii/5.png',
+      '/portafolio/projects/sii/6.png',
+      '/portafolio/projects/sii/7.png',
+      '/portafolio/projects/sii/8.png',
+      '/portafolio/projects/sii/11.png',
+      '/portafolio/projects/sii/12.png',
+      '/portafolio/projects/sii/9.png',
+      '/portafolio/projects/sii/10.png',
     ],
   },
 ];
@@ -183,7 +183,7 @@ export default function Home() {
                   Contactar ahora
                 </button>
                 <a
-                  href="/cv.pdf"
+                  href="/portafolio/cv.pdf"
                   download
                   className="btn btn-secondary"
                 >
