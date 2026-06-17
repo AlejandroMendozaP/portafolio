@@ -37,6 +37,21 @@ const projectsData = [
       '/portafolio/projects/sii/10.png',
     ],
   },
+  {
+    id: 2,
+    title: 'ERP de Gestión Deportiva y Administrativa para Escuela de Fútbol Celaya FC',
+    description: 'Software integral diseñado para optimizar la administración de procesos operativos, deportivos y financieros dentro de la escuela de fútbol oficial del Celaya FC. El sistema centraliza y automatiza operaciones críticas como el registro y control de expedientes de jugadores y sus tutores, el seguimiento de convocatorias y estadísticas en torneos, la administración de cobros y pagos de mensualidades, y el boletaje para partidos, ofreciendo una plataforma unificada que facilita la gestión del ciclo formativo de los deportistas.',
+    technologies: ['Vue', 'Laravel', 'MariaDB', 'PrimeVue', 'StripeAPI'],
+    images: [
+      '/portafolio/projects/toritos/1.png',
+      '/portafolio/projects/toritos/2.png',
+      '/portafolio/projects/toritos/3.png',
+      '/portafolio/projects/toritos/4.png',
+      '/portafolio/projects/toritos/5.png',
+      '/portafolio/projects/toritos/6.png',
+      '/portafolio/projects/toritos/7.png'
+    ],
+  },
 ];
 
 function ProjectCard({ project, onOpenLightbox }: { project: any, onOpenLightbox: (data: { images: string[], index: number }) => void }) {
