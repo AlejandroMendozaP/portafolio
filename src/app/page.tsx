@@ -11,10 +11,15 @@ import {
   MapPin,
   Download,
   Menu,
-  X
+  X,
+  Code,
+  Briefcase,
+  GraduationCap,
+  Sparkles,
+  Globe,
+  Database
 } from 'lucide-react';
-import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const projectsData = [
   {
@@ -57,11 +62,17 @@ const projectsData = [
 function ProjectCard({ project, onOpenLightbox }: { project: any, onOpenLightbox: (data: { images: string[], index: number }) => void }) {
   const [activeImg, setActiveImg] = useState(0);
 
-  const nextImg = () => setActiveImg((prev) => (prev + 1) % project.images.length);
-  const prevImg = () => setActiveImg((prev) => (prev - 1 + project.images.length) % project.images.length);
+  const nextImg = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setActiveImg((prev) => (prev + 1) % project.images.length);
+  };
+  const prevImg = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setActiveImg((prev) => (prev - 1 + project.images.length) % project.images.length);
+  };
 
   return (
-    <div className="glass-card project-card">
+    <div className="project-card">
       <div className="project-gallery">
         <div className="project-image-container">
           <img
@@ -84,7 +95,10 @@ function ProjectCard({ project, onOpenLightbox }: { project: any, onOpenLightbox
                   <button
                     key={idx}
                     className={`indicator ${idx === activeImg ? 'active' : ''}`}
-                    onClick={() => setActiveImg(idx)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActiveImg(idx);
+                    }}
                     aria-label={`Ir a imagen ${idx + 1}`}
                   />
                 ))}
@@ -99,6 +113,115 @@ function ProjectCard({ project, onOpenLightbox }: { project: any, onOpenLightbox
         <div className="project-tech">
           {project.technologies.map((tech: string, idx: number) => (
             <span key={idx} className="tech-tag">{tech}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DeveloperTerminal() {
+  const [input, setInput] = useState('');
+  const [history, setHistory] = useState<Array<{ type: 'input' | 'output'; text: string }>>([
+    {
+      type: 'output',
+      text: 'Alejandro Mendoza [Versión 2.0.0]\n(c) 2026 Alejandro Mendoza. Todos los derechos reservados.\n\nEscribe "help" para ver la lista de comandos disponibles o haz clic en los accesos rápidos de abajo.'
+    }
+  ]);
+  const bodyRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (bodyRef.current) {
+      bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
+    }
+  }, [history]);
+
+  const executeCommand = (cmdText: string) => {
+    const trimmed = cmdText.trim();
+    if (!trimmed) return;
+
+    let reply = '';
+    const cmdClean = trimmed.toLowerCase();
+
+    switch (cmdClean) {
+      case 'help':
+        reply = 'Comandos disponibles:\n  about      - Quién es Alejandro Mendoza\n  skills     - Tecnologías y habilidades principales\n  projects   - Resumen de proyectos destacados\n  contact    - Información de contacto y redes sociales\n  clear      - Limpiar la pantalla de la terminal';
+        break;
+      case 'about':
+        reply = 'Alejandro Mendoza - Desarrollador Web Full Stack\n\nIngeniero en Sistemas Computacionales egresado del Tecnológico Nacional de México, Campus Celaya.\nApasionado por la arquitectura limpia, la automatización y la creación de interfaces de usuario interactivas, fluidas y memorables.';
+        break;
+      case 'skills':
+        reply = 'Habilidades principales:\n  * Frontend: React, Vue, Javascript (ES6), HTML5, CSS3, PrimeVue, Tailwind CSS\n  * Backend : Laravel (PHP), .NET (C#), Java MVC\n  * Base de datos: PostgreSQL, MariaDB, MySQL\n  * Integraciones y APIs: Stripe, RESTful APIs, Git';
+        break;
+      case 'projects':
+        reply = 'Proyectos destacados:\n  1. Sistema Integral de Información: Gestión académica integral (React, Laravel, PostgreSQL, Tailwind).\n  2. ERP Celaya FC Escuela: Administración, finanzas y pasarela Stripe (Vue, Laravel, MariaDB, PrimeVue).';
+        break;
+      case 'contact':
+        reply = 'Información de Contacto:\n  * Correo: mendozaparamo.a@gmail.com\n  * LinkedIn: linkedin.com/in/alejandro-mendoza-paramo\n  * GitHub: github.com/AlejandroMendozaP\n  * Ubicación: Celaya, Guanajuato, México';
+        break;
+      case 'clear':
+        setHistory([]);
+        setInput('');
+        return;
+      default:
+        reply = `Comando no reconocido: "${trimmed}". Escribe "help" para ver la lista de comandos disponibles.`;
+    }
+
+    setHistory((prev) => [
+      ...prev,
+      { type: 'input', text: trimmed },
+      { type: 'output', text: reply }
+    ]);
+    setInput('');
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      executeCommand(input);
+    }
+  };
+
+  return (
+    <div className="terminal-window">
+      <div className="terminal-header">
+        <span className="terminal-dot red"></span>
+        <span className="terminal-dot yellow"></span>
+        <span className="terminal-dot green"></span>
+        <span className="terminal-title">visitor@alejandromendoza: ~</span>
+      </div>
+      <div className="terminal-body" ref={bodyRef}>
+        {history.map((line, idx) => (
+          <div key={idx}>
+            {line.type === 'input' ? (
+              <div className="terminal-input-line">
+                <span className="terminal-prompt">$</span>
+                <span className="terminal-output-command">{line.text}</span>
+              </div>
+            ) : (
+              <div className="terminal-output">{line.text}</div>
+            )}
+          </div>
+        ))}
+        <div className="terminal-input-line">
+          <span className="terminal-prompt">$</span>
+          <input
+            type="text"
+            className="terminal-input"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Escribe help..."
+          />
+        </div>
+        <div className="terminal-btn-grid">
+          {['help', 'about', 'skills', 'projects', 'contact', 'clear'].map((cmd) => (
+            <button
+              key={cmd}
+              className="terminal-btn"
+              onClick={() => executeCommand(cmd)}
+            >
+              {cmd}
+            </button>
           ))}
         </div>
       </div>
@@ -136,8 +259,20 @@ export default function Home() {
 
   return (
     <>
+      {/* Background glow orbs */}
+      <div className="bg-glow-container">
+        <div className="bg-glow-orb orb-1"></div>
+        <div className="bg-glow-orb orb-2"></div>
+        <div className="bg-glow-orb orb-3"></div>
+      </div>
+
+      {/* Floating pill navigation */}
       <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
-        <div className="container">
+        <div className="nav-container">
+          <button onClick={() => scrollToSection('home')} className="nav-logo">
+            AMP<span></span>
+          </button>
+
           <div className={`nav-links ${mobileMenuOpen ? 'active' : ''}`}>
             {navLinks.map((link) => (
               <button
@@ -151,9 +286,9 @@ export default function Home() {
             <button
               onClick={() => scrollToSection('contact')}
               className="btn btn-primary"
-              style={{ padding: '0.5rem 1.2rem', fontSize: '0.9rem' }}
+              style={{ padding: '0.4rem 1.2rem', fontSize: '0.85rem' }}
             >
-              Contactar
+              Contacto
             </button>
           </div>
 
@@ -161,169 +296,253 @@ export default function Home() {
             className="mobile-nav-toggle"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
       </nav>
 
-      <main>
-        <section id="home" className="hero">
-          <div className="hero-bg-glow"></div>
-          <div className="hero-bg-glow-2"></div>
+      <main className="container">
+        <div className="bento-container">
 
-          <div className="container">
-            <div className="hero-content animate-fade-in">
-              <div className="hero-badge">
-                <Terminal size={16} />
-                <span>Disponible para nuevos proyectos</span>
-              </div>
-
-              <h1 className="hero-title">
-                Alejandro Mendoza <br />
-                <span className="text-gradient">Desarrollador Web</span>
-              </h1>
-
-              <p className="hero-subtitle">
-                Ingeniero en Sistemas Computacionales enfocado en la resolución
-                de problemas complejos a través de soluciones eficientes, escalables
-                y con interfaces excepcionales.
-              </p>
-
-              <div className="hero-actions">
-                <button
-                  onClick={() => scrollToSection('contact')}
-                  className="btn btn-primary"
-                >
-                  <Mail size={18} />
-                  Contactar ahora
-                </button>
-                <a
-                  href="/portafolio/cv.pdf"
-                  download
-                  className="btn btn-secondary"
-                >
-                  <Download size={18} />
-                  Descargar CV
-                </a>
-              </div>
+          {/* CARD 1: HERO (col-8) */}
+          <section id="home" className="bento-card col-8 card-hero animate-fade-in">
+            <div className="hero-badge">
+              <Terminal size={14} />
+              <span>Disponible para nuevos proyectos</span>
             </div>
-          </div>
-        </section>
-
-        <section id="projects" className="section" style={{ background: 'var(--bg-secondary)' }}>
-          <div className="container">
-            <h2 className="section-title">Proyectos Destacados</h2>
-            <div className="projects-grid">
-              {projectsData.map((project) => (
-                <ProjectCard key={project.id} project={project} onOpenLightbox={setLightboxData} />
-              ))}
+            <h1 className="hero-title">
+              Alejandro Mendoza <br />
+              <span className="text-gradient">Desarrollador Web Full Stack</span>
+            </h1>
+            <p className="hero-subtitle">
+              Ingeniero en Sistemas Computacionales especializado en crear soluciones escalables, eficientes y visualmente impecables, resolviendo problemas complejos de extremo a extremo.
+            </p>
+            <div className="hero-actions">
+              <button
+                onClick={() => scrollToSection('contact')}
+                className="btn btn-primary"
+              >
+                <Mail size={16} />
+                Contactar ahora
+              </button>
+              <a
+                href="/portafolio/cv.pdf"
+                download
+                className="btn btn-secondary"
+              >
+                <Download size={16} />
+                Descargar CV
+              </a>
             </div>
-          </div>
-        </section>
+          </section>
 
-        <section id="experience" className="section">
-          <div className="container">
-            <h2 className="section-title">Experiencia Profesional</h2>
-
-            <div className="timeline">
-              <div className="timeline-item glass-card" style={{ marginBottom: '2rem', padding: '2rem 2rem 2rem 3.5rem', borderLeft: 'none' }}>
-                <div className="timeline-dot"></div>
-                <span className="timeline-date">Actualidad</span>
-                <h3 className="timeline-title">Desarrollador Full Stack</h3>
-                <h4 className="timeline-company">ICE México</h4>
-                <p className="timeline-details">
-                  Desarrollo y mantenimiento de aplicaciones end-to-end. Diseño e implementación de interfaces interactivas con React.
-                  Construcción de APIs y lógica de negocio robusta utilizando Laravel y .NET. Optimización de consultas a la base de datos
-                  y aseguramiento de calidad mediante pruebas constantes.
-                </p>
+          {/* CARD 2: QUICK STATUS (col-4) */}
+          <div className="bento-card col-4 animate-fade-in" style={{ justifyContent: 'center' }}>
+            <h3 className="bento-title"><Sparkles size={18} /> Resumen</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', fontSize: '0.95rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <div className="contact-icon-wrapper" style={{ width: '36px', height: '36px', borderRadius: '8px' }}>
+                  <CheckCircle2 size={16} />
+                </div>
+                <div>
+                  <div style={{ fontWeight: '600', color: 'var(--text-primary)' }}>Egresado</div>
+                  <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>TecNM Celaya (2020 - 2024)</div>
+                </div>
               </div>
-
-              <div className="timeline-item glass-card" style={{ marginBottom: '2rem', padding: '2rem 2rem 2rem 3.5rem', borderLeft: 'none' }}>
-                <div className="timeline-dot"></div>
-                <span className="timeline-date">Anterior</span>
-                <h3 className="timeline-title">Desarrollador de Software</h3>
-                <h4 className="timeline-company">Sistema Babbel</h4>
-                <p className="timeline-details">
-                  Creación de un sistema integral de gestión de tareas y flujos de trabajo.
-                  Desarrollado en Java con integración a base de datos PostgreSQL.
-                  Responsable del modelado de datos, arquitectura MVC y despliegue del aplicativo.
-                </p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <div className="contact-icon-wrapper" style={{ width: '36px', height: '36px', borderRadius: '8px', color: 'var(--accent-violet)' }}>
+                  <Briefcase size={16} />
+                </div>
+                <div>
+                  <div style={{ fontWeight: '600', color: 'var(--text-primary)' }}>Full Stack Dev</div>
+                  <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>ICE México</div>
+                </div>
               </div>
-
-              <div className="timeline-item glass-card" style={{ padding: '2rem 2rem 2rem 3.5rem', borderLeft: 'none' }}>
-                <div className="timeline-dot"></div>
-                <span className="timeline-date">Prácticas / Servicio</span>
-                <h3 className="timeline-title">Administrador de Centro de Cómputo</h3>
-                <h4 className="timeline-company">Tecnológico Nacional de México</h4>
-                <p className="timeline-details">
-                  Administración de infraestructura tecnológica, mantenimiento preventivo y correctivo de equipos.
-                  Soporte técnico a usuarios, configuración de redes locales y gestión de inventarios de software y hardware.
-                  Aseguramiento de la operatividad continua de los laboratorios.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="education" className="section" style={{ background: 'var(--bg-secondary)' }}>
-          <div className="container">
-            <h2 className="section-title">Educación</h2>
-
-            <div className="glass-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '2rem' }}>
-              <div>
-                <h3 style={{ fontSize: '1.6rem', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
-                  Ingeniería en Sistemas Computacionales
-                </h3>
-                <h4 style={{ color: 'var(--accent-cyan)', fontSize: '1.1rem', marginBottom: '1rem' }}>
-                  Tecnológico Nacional de México, Campus Celaya
-                </h4>
-                <p style={{ color: 'var(--text-secondary)' }}>
-                  Enfoque especializado en desarrollo de software interactivo, arquitectura de sistemas y bases de datos.
-                </p>
-              </div>
-              <div style={{ textAlign: 'right', minWidth: '150px' }}>
-                <span style={{
-                  background: 'rgba(139, 92, 246, 0.1)',
-                  color: 'var(--accent-violet)',
-                  padding: '0.5rem 1rem',
-                  borderRadius: '999px',
-                  fontWeight: '600',
-                  fontSize: '0.95rem'
-                }}>
-                  2020 — 2025
-                </span>
-                <div style={{ marginTop: '1rem', color: 'var(--text-muted)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0.5rem' }}>
-                  <CheckCircle2 size={16} color="var(--accent-cyan)" /> Egresado
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <div className="contact-icon-wrapper" style={{ width: '36px', height: '36px', borderRadius: '8px', color: 'var(--accent-rose)' }}>
+                  <MapPin size={16} />
+                </div>
+                <div>
+                  <div style={{ fontWeight: '600', color: 'var(--text-primary)' }}>Ubicación</div>
+                  <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Celaya, Guanajuato, México</div>
                 </div>
               </div>
             </div>
           </div>
-        </section>
-      </main>
 
-      <footer id="contact" className="footer">
-        <div className="container">
-          <div className="footer-content">
-            <h2 style={{ fontSize: '2rem', color: 'var(--text-primary)' }}>¿Listo para empezar un proyecto?</h2>
+          {/* CARD 3: INTERACTIVE TERMINAL (col-12) */}
+          <div className="bento-card col-12 animate-fade-in">
+            <h3 className="bento-title" style={{ marginBottom: '1rem' }}><Terminal size={18} /> Terminal del Desarrollador</h3>
+            <DeveloperTerminal />
+          </div>
 
-            <div className="social-links">
-              <a href="mailto:[EMAIL_ADDRESS]" className="social-link" title="Email" target="_blank" rel="noopener noreferrer">
-                <Mail size={20} />
-              </a>
-              <a href="https://linkedin.com/in/alejandro-mendoza-paramo" className="social-link" title="LinkedIn" target="_blank" rel="noopener noreferrer">
-                <Linkedin size={20} />
-              </a>
+          {/* CARD 4: PROJECTS HEADER (col-12) */}
+          <div id="projects" className="col-12" style={{ marginTop: '2rem' }}>
+            <h2 style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Code size={24} color="var(--accent-cyan)" /> Proyectos Destacados
+            </h2>
+            <p style={{ color: 'var(--text-secondary)', marginTop: '0.5rem', fontSize: '1rem' }}>
+              Una selección de los sistemas de producción y plataformas integrales que he diseñado e implementado.
+            </p>
+          </div>
+
+          {/* CARDS 5 & 6: FEATURED PROJECTS */}
+          {projectsData.map((project) => (
+            <div key={project.id} className="bento-card col-6" style={{ padding: 0 }}>
+              <ProjectCard project={project} onOpenLightbox={setLightboxData} />
             </div>
+          ))}
 
-            <div className="footer-info" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <MapPin size={16} color="var(--accent-cyan)" />
-              Celaya, Guanajuato, México
+          {/* CARD 7: EXPERIENCE TIMELINE (col-8) */}
+          <section id="experience" className="bento-card col-8">
+            <h3 className="bento-title"><Briefcase size={18} /> Experiencia Profesional</h3>
+            <div className="timeline">
+              <div className="timeline-item">
+                <div className="timeline-dot"></div>
+                <div className="timeline-header">
+                  <div>
+                    <h4 className="timeline-title">Desarrollador Full Stack</h4>
+                    <span className="timeline-company">ICE México</span>
+                  </div>
+                  <span className="timeline-date">Actualidad</span>
+                </div>
+                <p className="timeline-details">
+                  Desarrollo de punta a punta de aplicaciones corporativas. Implementación de dashboards interactivos en React con consumo de APIs eficientes. Diseño de servicios e integraciones robustas en el backend utilizando Laravel (PHP) y .NET (C#), modelando esquemas en bases de datos relacionales y realizando control de calidad de forma continua.
+                </p>
+              </div>
+
+              <div className="timeline-item">
+                <div className="timeline-dot"></div>
+                <div className="timeline-header">
+                  <div>
+                    <h4 className="timeline-title">Desarrollador de Software</h4>
+                    <span className="timeline-company">Sistema Babbel</span>
+                  </div>
+                  <span className="timeline-date">Prácticas</span>
+                </div>
+                <p className="timeline-details">
+                  Diseño integral de una plataforma interna de gestión y distribución de tareas y flujos de trabajo organizacionales. Construido sobre arquitectura MVC con Java y PostgreSQL, mejorando los tiempos de respuesta del equipo interno.
+                </p>
+              </div>
+
+              <div className="timeline-item">
+                <div className="timeline-dot"></div>
+                <div className="timeline-header">
+                  <div>
+                    <h4 className="timeline-title">Administrador de Centro de Cómputo</h4>
+                    <span className="timeline-company">Tecnológico Nacional de México</span>
+                  </div>
+                  <span className="timeline-date">Servicio Social</span>
+                </div>
+                <p className="timeline-details">
+                  Soporte técnico integral para hardware, software de laboratorio e infraestructura de red local. Gestión preventiva y correctiva de equipos de cómputo y conectividad en red.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          {/* CARD 8: SKILLS GRID (col-4) */}
+          <div className="bento-card col-4">
+            <h3 className="bento-title"><Code size={18} /> Habilidades</h3>
+            <div className="skills-grid">
+
+              <div className="skills-category">
+                <span className="skills-category-title"><Globe size={14} /> Frontend</span>
+                <div className="skills-list">
+                  {['React', 'Vue', 'Javascript', 'HTML5 / CSS3', 'PrimeVue', 'Tailwind CSS'].map((s) => (
+                    <span key={s} className="skill-tag">{s}</span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="skills-category">
+                <span className="skills-category-title"><Database size={14} /> Backend & DB</span>
+                <div className="skills-list">
+                  {['Laravel', '.NET', 'Java MVC', 'PostgreSQL', 'MariaDB', 'REST APIs'].map((s) => (
+                    <span key={s} className="skill-tag">{s}</span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="skills-category">
+                <span className="skills-category-title"><Sparkles size={14} /> Integraciones</span>
+                <div className="skills-list">
+                  {['Stripe API', 'Git', 'Agile / Scrum', 'CI/CD'].map((s) => (
+                    <span key={s} className="skill-tag">{s}</span>
+                  ))}
+                </div>
+              </div>
+
             </div>
           </div>
 
+          {/* CARD 9: EDUCATION (col-6) */}
+          <section id="education" className="bento-card col-6" style={{ justifyContent: 'space-between' }}>
+            <div>
+              <h3 className="bento-title"><GraduationCap size={18} /> Educación</h3>
+              <h4 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
+                Ingeniería en Sistemas Computacionales
+              </h4>
+              <p style={{ color: 'var(--accent-cyan)', fontWeight: '500', fontSize: '0.95rem', marginBottom: '1rem' }}>
+                Tecnológico Nacional de México, Campus Celaya
+              </p>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: '1.6' }}>
+                Formación orientada a la ingeniería de software interactiva, modelado avanzado de datos, arquitectura de sistemas y seguridad informática.
+              </p>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid var(--card-border)' }}>
+              <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Periodo</span>
+              <span style={{ background: 'rgba(139, 92, 246, 0.1)', color: 'var(--accent-violet)', padding: '0.25rem 0.75rem', borderRadius: '999px', fontSize: '0.85rem', fontWeight: '600' }}>
+                2020 — 2025
+              </span>
+            </div>
+          </section>
+
+          {/* CARD 10: CONTACT DETAILS (col-6) */}
+          <section id="contact" className="bento-card col-6" style={{ justifyContent: 'space-between' }}>
+            <div>
+              <h3 className="bento-title"><Mail size={18} /> Contacto</h3>
+              <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
+                ¿Tienes alguna consulta o propuesta interesante? Estoy disponible para charlar.
+              </p>
+
+              <div className="contact-grid">
+                <a href="mailto:mendozaparamo.a@gmail.com" className="contact-info-row">
+                  <div className="contact-icon-wrapper"><Mail size={18} /></div>
+                  <div>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Enviar correo electrónico</div>
+                    <div style={{ color: 'var(--text-primary)', fontWeight: '600', fontSize: '0.95rem' }}>mendozaparamo.a@gmail.com</div>
+                  </div>
+                </a>
+
+                <div className="contact-info-row">
+                  <div className="contact-icon-wrapper" style={{ color: 'var(--accent-rose)' }}><MapPin size={18} /></div>
+                  <div>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Ubicación actual</div>
+                    <div style={{ color: 'var(--text-primary)', fontWeight: '600', fontSize: '0.95rem' }}>Celaya, Guanajuato, México</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="social-pill-grid">
+              <a href="https://linkedin.com/in/alejandro-mendoza-paramo" className="social-pill" target="_blank" rel="noopener noreferrer">
+                <Linkedin size={18} /> LinkedIn
+              </a>
+              <a href="https://github.com/AlejandroMendozaP" className="social-pill" target="_blank" rel="noopener noreferrer">
+                <Github size={18} /> GitHub
+              </a>
+            </div>
+          </section>
+
+        </div>
+      </main>
+
+      <footer className="footer">
+        <div className="container">
           <div className="footer-bottom">
             <p>&copy; {new Date().getFullYear()} Alejandro Mendoza Paramo. Todos los derechos reservados.</p>
-            <p style={{ marginTop: '0.5rem', fontSize: '0.8rem' }}>Hecho con Next.js y diseño Vanilla CSS</p>
+            <p style={{ marginTop: '0.5rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>Hecho con Next.js y diseño premium Vanilla CSS</p>
           </div>
         </div>
       </footer>
@@ -331,7 +550,7 @@ export default function Home() {
       {lightboxData && (
         <div className="lightbox-overlay" onClick={() => setLightboxData(null)}>
           <button className="lightbox-close" onClick={() => setLightboxData(null)}>
-            <X size={28} color="white" />
+            <X size={24} color="white" />
           </button>
 
           <img
@@ -353,7 +572,7 @@ export default function Home() {
                   });
                 }}
               >
-                <ChevronLeft size={32} color="white" />
+                <ChevronLeft size={28} color="white" />
               </button>
               <button
                 className="lightbox-btn next"
@@ -365,7 +584,7 @@ export default function Home() {
                   });
                 }}
               >
-                <ChevronRight size={32} color="white" />
+                <ChevronRight size={28} color="white" />
               </button>
               <div className="lightbox-counter">
                 {lightboxData.index + 1} / {lightboxData.images.length}
